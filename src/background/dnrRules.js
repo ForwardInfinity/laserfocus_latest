@@ -54,11 +54,4 @@ export function blockedListToDnrRules(blockedDomains = [], overlayPath = '/src/o
       },
     };
   });
-}
-
-// CommonJS compatibility for Node-based Jest tests
-// eslint-disable-next-line no-undef
-if (typeof module !== 'undefined') {
-  // eslint-disable-next-line no-undef
-  module.exports = { blockedListToDnrRules };
 } 

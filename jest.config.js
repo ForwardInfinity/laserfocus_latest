@@ -18,7 +18,7 @@ export default {
   testEnvironment: "node",
   
   // The glob patterns Jest uses to detect test files
-  testMatch: ["**/tests/unit/**/*.test.js"],
+  testMatch: ["**/tests/unit/**/*.test.[jt]s", "**/tests/unit/**/*.test.mjs"],
   
   // An array of regexp pattern strings that are matched against all test paths
   testPathIgnorePatterns: ["/node_modules/", ".*\\.e2e\\.test\\.js$"],
