@@ -15,7 +15,7 @@ export default {
   transform: {},
   
   // Environment for running tests
-  testEnvironment: "jest-environment-puppeteer",
+  testEnvironment: "node",
   
   // The glob patterns Jest uses to detect test files
   testMatch: ["**/tests/unit/**/*.test.js"],
