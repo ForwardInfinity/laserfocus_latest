@@ -48,7 +48,7 @@ This document is the machine‑readable, step‑by‑step execution plan for an 
 
 #### **Phase 0 – Environment & Skeleton**
 
-| Task ID | Task Type | Description                                                                | Affected Files               | Action           | Dependencies | References | Acceptance Criteria          |
+| Task ID | Task Type | Description                                                                | File Path                    | Action           | Dependencies | References | Acceptance Criteria          |
 | ------- | --------- | -------------------------------------------------------------------------- | ---------------------------- | ---------------- | ------------ | ---------- | ---------------------------- |
 | P0‑T‑01 | Test      | Create failing smoke test asserting Jest runs (`expect(true).toBe(false)`) | tests/unit/bootstrap.test.js | Add minimal test | —            | —          | Jest CLI exits with non‑zero |
 | P0‑C‑02 | Code      | Adjust test to `expect(true).toBe(true)`                                   | tests/unit/bootstrap.test.js | Edit assertion   | P0‑T‑01      | —          | `npm test` passes            |
@@ -61,7 +61,7 @@ This document is the machine‑readable, step‑by‑step execution plan for an 
 
 #### **Phase 1 – Storage & Default Block‑List**
 
-| Task ID | Task Type | Description                                                               | Affected Files                   | Action                                                    | Dependencies | References    | Acceptance Criteria    |
+| Task ID | Task Type | Description                                                               | File Path                        | Action                                                    | Dependencies | References    | Acceptance Criteria    |
 | ------- | --------- | ------------------------------------------------------------------------- | -------------------------------- | --------------------------------------------------------- | ------------ | ------------- | ---------------------- |
 | P1‑T‑01 | Test      | Failing unit test: `getBlockedDomains()` returns seeded list on first run | tests/unit/storage.test.js       | Write Jest test stub                                      | P0‑R‑03      | FR‑012 FR‑013 | Test fails             |
 | P1‑C‑02 | Code      | Implement `storage.js` with `getBlockedDomains`, `saveBlockedDomains`     | src/background/storage.js        | Add minimal code to pass test (return hard‑coded default) | P1‑T‑01      | FR‑012 FR‑013 | Test passes            |
@@ -80,7 +80,7 @@ Run `npm test`; all storage & predicate tests pass. Manually load unpacked exten
 
 #### **Phase 2 – Domain Interception & Redirect**
 
-| Task ID | Task Type | Description                                                                                                        | Affected Files                 | Action                               | Dependencies | References    | Acceptance Criteria           |
+| Task ID | Task Type | Description                                                                                                        | File Path                      | Action                               | Dependencies | References    | Acceptance Criteria           |
 | ------- | --------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------ | ------------------------------------ | ------------ | ------------- | ----------------------------- |
 | P2‑T‑01 | Test      | Failing unit test: `domainMatch("M.Facebook.com")` ⇒ true                                                          | tests/unit/domainMatch.test.js | Add case‑insensitive, subdomain test | P1‑R‑09      | FR‑001 FR‑002 | Test fails                    |
 | P2‑C‑02 | Code      | Implement minimal `domainMatch()` util                                                                             | src/background/domainMatch.js  | Pass failing test                    | P2‑T‑01      | FR‑001 FR‑002 | Test passes                   |
@@ -99,14 +99,14 @@ E2E script loads test page; network panel shows zero byte request to blocked sit
 
 #### **Phase 3 – Overlay Base (Layout & Video Container)**
 
-|Task ID|Task Type|Description|Affected Files|Action|Dependencies|References|Acceptance Criteria|
-|---|---|---|---|---|---|---|---|
-|P3‑T‑01|Test|Failing unit: overlay container spans 100 vw×100 vh|tests/unit/overlayStyle.test.js|JSDOM evaluate CSS|P2‑R‑09|FR‑004|Test fails|
-|P3‑C‑02|Code|Create `overlay.html` with `<div id="laserfocus-overlay">` & base CSS|src/overlay/overlay.htmlsrc/overlay/overlay.css|Minimal markup & style|P3‑T‑01|FR‑004|Test passes|
-|P3‑R‑03|Refactor|Move CSS variables, add z‑index 999999|src/overlay/overlay.css|Refactor|P3‑C‑02|FR‑004|Tests pass|
-|P3‑T‑04|Test|Failing e2e: spinner visible until `video.readyState >= 3`|tests/e2e/spinner.e2e.test.js|Puppeteer waits|P3‑R‑03|FR‑005|Test fails|
-|P3‑C‑05|Code|Add spinner markup & JS to hide on `canplaythrough`|src/overlay/overlay.js|Implement minimal|P3‑T‑04|FR‑005|Test passes|
-|P3‑R‑06|Refactor|Extract `showSpinner/hideSpinner` utilities|src/overlay/ui.js|Refactor|P3‑C‑05|FR‑005|All overlay tests pass|
+| Task ID | Task Type | Description                                                           | File Path                                       | Action                 | Dependencies | References | Acceptance Criteria    |
+| ------- | --------- | --------------------------------------------------------------------- | ----------------------------------------------- | ---------------------- | ------------ | ---------- | ---------------------- |
+| P3‑T‑01 | Test      | Failing unit: overlay container spans 100 vw×100 vh                   | tests/unit/overlayStyle.test.js                 | JSDOM evaluate CSS     | P2‑R‑09      | FR‑004     | Test fails             |
+| P3‑C‑02 | Code      | Create `overlay.html` with `<div id="laserfocus-overlay">` & base CSS | src/overlay/overlay.htmlsrc/overlay/overlay.css | Minimal markup & style | P3‑T‑01      | FR‑004     | Test passes            |
+| P3‑R‑03 | Refactor  | Move CSS variables, add z‑index 999999                                | src/overlay/overlay.css                         | Refactor               | P3‑C‑02      | FR‑004     | Tests pass             |
+| P3‑T‑04 | Test      | Failing e2e: spinner visible until `video.readyState >= 3`            | tests/e2e/spinner.e2e.test.js                   | Puppeteer waits        | P3‑R‑03      | FR‑005     | Test fails             |
+| P3‑C‑05 | Code      | Add spinner markup & JS to hide on `canplaythrough`                   | src/overlay/overlay.js                          | Implement minimal      | P3‑T‑04      | FR‑005     | Test passes            |
+| P3‑R‑06 | Refactor  | Extract `showSpinner/hideSpinner` utilities                           | src/overlay/ui.js                               | Refactor               | P3‑C‑05      | FR‑005     | All overlay tests pass |
 
 **Validation (Phase 3)**  
 Open overlay directly; verify full‑screen container, spinner disappears when local video cached.
@@ -115,11 +115,11 @@ Open overlay directly; verify full‑screen container, spinner disappears when l
 
 #### **Phase 4 – Video Variety (Shuffle Queue)**
 
-|Task ID|Task Type|Description|Affected Files|Action|Dependencies|References|Acceptance Criteria|
-|---|---|---|---|---|---|---|---|
-|P4‑T‑01|Test|Failing unit: queue guarantees ≥ 2 distinct videos in 10 picks|tests/unit/shuffleQueue.test.js|Simulate 20 runs|P3‑R‑06|FR‑007|Test fails|
-|P4‑C‑02|Code|Implement `getNextVideo()` with circular `videoHistory`|src/overlay/videoQueue.js|Minimal logic|P4‑T‑01|FR‑007 4.3|Test passes|
-|P4‑R‑03|Refactor|Persist `videoHistory` to `chrome.storage.local`|src/overlay/videoQueue.js|Refactor|P4‑C‑02|FR‑007 4.3|All queue tests pass|
+| Task ID | Task Type | Description                                                    | File Path                       | Action           | Dependencies | References | Acceptance Criteria  |
+| ------- | --------- | -------------------------------------------------------------- | ------------------------------- | ---------------- | ------------ | ---------- | -------------------- |
+| P4‑T‑01 | Test      | Failing unit: queue guarantees ≥ 2 distinct videos in 10 picks | tests/unit/shuffleQueue.test.js | Simulate 20 runs | P3‑R‑06      | FR‑007     | Test fails           |
+| P4‑C‑02 | Code      | Implement `getNextVideo()` with circular `videoHistory`        | src/overlay/videoQueue.js       | Minimal logic    | P4‑T‑01      | FR‑007 4.3 | Test passes          |
+| P4‑R‑03 | Refactor  | Persist `videoHistory` to `chrome.storage.local`               | src/overlay/videoQueue.js       | Refactor         | P4‑C‑02      | FR‑007 4.3 | All queue tests pass |
 
 **Validation (Phase 4)**  
 Run unit test; log shows distribution of at least 2 unique filenames per 10 invocations.
@@ -128,17 +128,17 @@ Run unit test; log shows distribution of at least 2 unique filenames per 10 invo
 
 #### **Phase 5 – Decision Flow (Buttons & Navigation)**
 
-|Task ID|Task Type|Description|Affected Files|Action|Dependencies|References|Acceptance Criteria|
-|---|---|---|---|---|---|---|---|
-|P5‑T‑01|Test|Failing e2e: Continue & Go Back **disabled** pre‑video|tests/e2e/buttonState.e2e.test.js|Puppeteer eval|P4‑R‑03|FR‑008|Test fails|
-|P5‑C‑02|Code|Add buttons markup, disable attr, enable on `video.ended`|src/overlay/overlay.htmlsrc/overlay/overlay.js|Implement|P5‑T‑01|FR‑008|Test passes|
-|P5‑R‑03|Refactor|Factor event binding into `controls.js`|src/overlay/controls.js|Refactor|P5‑C‑02|FR‑008|Tests pass|
-|P5‑T‑04|Test|Failing e2e: clicking **Continue** loads original URL|tests/e2e/continue.e2e.test.js|Use target param|P5‑R‑03|FR‑003 FR‑009|Test fails|
-|P5‑C‑05|Code|Implement runtime message from overlay → service worker to `tabs.update`|src/background/navigation.js|Minimal|P5‑T‑04|FR‑003 FR‑009|Test passes|
-|P5‑R‑06|Refactor|Co‑locate message keys in `messages.js`|src/common/messages.js|Refactor|P5‑C‑05|FR‑003|Tests pass|
-|P5‑T‑07|Test|Failing e2e: **Go Back** performs history.back or new‑tab|tests/e2e/goBack.e2e.test.js|Simulate history length|P5‑R‑06|FR‑010|Test fails|
-|P5‑C‑08|Code|Extend navigation handler for conditional logic|src/background/navigation.js|Implement|P5‑T‑07|FR‑010|Test passes|
-|P5‑R‑09|Refactor|Extract helper `goBackOrNewTab()`|src/background/navigation.js|Refactor|P5‑C‑08|FR‑010|All decision tests pass|
+| Task ID | Task Type | Description                                                              | File Path                                      | Action                  | Dependencies | References    | Acceptance Criteria     |
+| ------- | --------- | ------------------------------------------------------------------------ | ---------------------------------------------- | ----------------------- | ------------ | ------------- | ----------------------- |
+| P5‑T‑01 | Test      | Failing e2e: Continue & Go Back **disabled** pre‑video                   | tests/e2e/buttonState.e2e.test.js              | Puppeteer eval          | P4‑R‑03      | FR‑008        | Test fails              |
+| P5‑C‑02 | Code      | Add buttons markup, disable attr, enable on `video.ended`                | src/overlay/overlay.htmlsrc/overlay/overlay.js | Implement               | P5‑T‑01      | FR‑008        | Test passes             |
+| P5‑R‑03 | Refactor  | Factor event binding into `controls.js`                                  | src/overlay/controls.js                        | Refactor                | P5‑C‑02      | FR‑008        | Tests pass              |
+| P5‑T‑04 | Test      | Failing e2e: clicking **Continue** loads original URL                    | tests/e2e/continue.e2e.test.js                 | Use target param        | P5‑R‑03      | FR‑003 FR‑009 | Test fails              |
+| P5‑C‑05 | Code      | Implement runtime message from overlay → service worker to `tabs.update` | src/background/navigation.js                   | Minimal                 | P5‑T‑04      | FR‑003 FR‑009 | Test passes             |
+| P5‑R‑06 | Refactor  | Co‑locate message keys in `messages.js`                                  | src/common/messages.js                         | Refactor                | P5‑C‑05      | FR‑003        | Tests pass              |
+| P5‑T‑07 | Test      | Failing e2e: **Go Back** performs history.back or new‑tab                | tests/e2e/goBack.e2e.test.js                   | Simulate history length | P5‑R‑06      | FR‑010        | Test fails              |
+| P5‑C‑08 | Code      | Extend navigation handler for conditional logic                          | src/background/navigation.js                   | Implement               | P5‑T‑07      | FR‑010        | Test passes             |
+| P5‑R‑09 | Refactor  | Extract helper `goBackOrNewTab()`                                        | src/background/navigation.js                   | Refactor                | P5‑C‑08      | FR‑010        | All decision tests pass |
 
 **Validation (Phase 5)**  
 Manual flow: Visit blocked domain → watch video → Continue opens site; Go Back returns or opens new tab depending on history.
@@ -147,14 +147,14 @@ Manual flow: Visit blocked domain → watch video → Continue opens site; Go B
 
 #### **Phase 6 – Options Page (Block‑List Manager)**
 
-|Task ID|Task Type|Description|Affected Files|Action|Dependencies|References|Acceptance Criteria|
-|---|---|---|---|---|---|---|---|
-|P6‑T‑01|Test|Failing unit: textarea loads current domains on open|tests/unit/optionsLoad.test.js|JSDOM form test|P5‑R‑09|FR‑011 FR‑012|Test fails|
-|P6‑C‑02|Code|Build `options.html` + `options.js` to read storage and populate textarea|src/options/*|Minimal|P6‑T‑01|FR‑011 FR‑012|Test passes|
-|P6‑R‑03|Refactor|Factor sanitisation util to `sanitizeDomain()`|src/options/sanitize.js|Refactor|P6‑C‑02|FR‑011|Tests pass|
-|P6‑T‑04|Test|Failing e2e: clicking **Save** persists and rule list updates without reload|tests/e2e/optionsSave.e2e.test.js|Puppeteer|P6‑R‑03|FR‑011 FR‑012|Test fails|
-|P6‑C‑05|Code|Implement save handler; post‑message to service worker to rebuild dNR rules|src/options/options.js|Implement|P6‑T‑04|FR‑012 FR‑019|Test passes|
-|P6‑R‑06|Refactor|Debounce save notifications & add toast|src/options/options.js|Refactor|P6‑C‑05|FR‑011|All options tests pass|
+| Task ID | Task Type | Description                                                                  | File Path                         | Action          | Dependencies | References    | Acceptance Criteria    |
+| ------- | --------- | ---------------------------------------------------------------------------- | --------------------------------- | --------------- | ------------ | ------------- | ---------------------- |
+| P6‑T‑01 | Test      | Failing unit: textarea loads current domains on open                         | tests/unit/optionsLoad.test.js    | JSDOM form test | P5‑R‑09      | FR‑011 FR‑012 | Test fails             |
+| P6‑C‑02 | Code      | Build `options.html` + `options.js` to read storage and populate textarea    | src/options/*                     | Minimal         | P6‑T‑01      | FR‑011 FR‑012 | Test passes            |
+| P6‑R‑03 | Refactor  | Factor sanitisation util to `sanitizeDomain()`                               | src/options/sanitize.js           | Refactor        | P6‑C‑02      | FR‑011        | Tests pass             |
+| P6‑T‑04 | Test      | Failing e2e: clicking **Save** persists and rule list updates without reload | tests/e2e/optionsSave.e2e.test.js | Puppeteer       | P6‑R‑03      | FR‑011 FR‑012 | Test fails             |
+| P6‑C‑05 | Code      | Implement save handler; post‑message to service worker to rebuild dNR rules  | src/options/options.js            | Implement       | P6‑T‑04      | FR‑012 FR‑019 | Test passes            |
+| P6‑R‑06 | Refactor  | Debounce save notifications & add toast                                      | src/options/options.js            | Refactor        | P6‑C‑05      | FR‑011        | All options tests pass |
 
 **Validation (Phase 6)**  
 Options page shows domains, allows editing; adding `example.com` immediately blocks site in new tab.
@@ -163,14 +163,14 @@ Options page shows domains, allows editing; adding `example.com` immediately blo
 
 #### **Phase 7 – Accessibility & Responsiveness**
 
-|Task ID|Task Type|Description|Affected Files|Action|Dependencies|References|Acceptance Criteria|
-|---|---|---|---|---|---|---|---|
-|P7‑T‑01|Test|Failing axe‑core scan: overlay must have role dialog & aria‑modal|tests/unit/a11y.test.js|axe‑core JSDOM|P6‑R‑06|FR‑017 FR‑018|Test fails|
-|P7‑C‑02|Code|Add ARIA attributes, focus trap cycle|src/overlay/overlay.js|Implement|P7‑T‑01|FR‑017 FR‑018|Test passes|
-|P7‑R‑03|Refactor|Extract `focusTrap.js`, document keyboard shortcuts|src/overlay/focusTrap.js|Refactor|P7‑C‑02|FR‑018|Tests pass|
-|P7‑T‑04|Test|Failing responsive snapshot at 320 px & 2560 px|tests/e2e/responsive.e2e.test.js|puppeteer‑screenshots|P7‑R‑03|NFR‑006|Test fails|
-|P7‑C‑05|Code|Add media queries & flexible layout|src/overlay/overlay.css|Implement|P7‑T‑04|NFR‑006|Test passes|
-|P7‑R‑06|Refactor|Replace px with rem units; consolidate breakpoints|src/overlay/overlay.css|Refactor|P7‑C‑05|NFR‑006|All a11y/responsive tests pass|
+| Task ID | Task Type | Description                                                       | File Path                        | Action                | Dependencies | References    | Acceptance Criteria            |
+| ------- | --------- | ----------------------------------------------------------------- | -------------------------------- | --------------------- | ------------ | ------------- | ------------------------------ |
+| P7‑T‑01 | Test      | Failing axe‑core scan: overlay must have role dialog & aria‑modal | tests/unit/a11y.test.js          | axe‑core JSDOM        | P6‑R‑06      | FR‑017 FR‑018 | Test fails                     |
+| P7‑C‑02 | Code      | Add ARIA attributes, focus trap cycle                             | src/overlay/overlay.js           | Implement             | P7‑T‑01      | FR‑017 FR‑018 | Test passes                    |
+| P7‑R‑03 | Refactor  | Extract `focusTrap.js`, document keyboard shortcuts               | src/overlay/focusTrap.js         | Refactor              | P7‑C‑02      | FR‑018        | Tests pass                     |
+| P7‑T‑04 | Test      | Failing responsive snapshot at 320 px & 2560 px                   | tests/e2e/responsive.e2e.test.js | puppeteer‑screenshots | P7‑R‑03      | NFR‑006       | Test fails                     |
+| P7‑C‑05 | Code      | Add media queries & flexible layout                               | src/overlay/overlay.css          | Implement             | P7‑T‑04      | NFR‑006       | Test passes                    |
+| P7‑R‑06 | Refactor  | Replace px with rem units; consolidate breakpoints                | src/overlay/overlay.css          | Refactor              | P7‑C‑05      | NFR‑006       | All a11y/responsive tests pass |
 
 **Validation (Phase 7)**  
 axe‑core has zero critical violations; manual `Tab` cycles inside overlay; screenshots across widths show full coverage.
@@ -179,14 +179,14 @@ axe‑core has zero critical violations; manual `Tab` cycles inside overlay; scr
 
 #### **Phase 8 – Packaging & Compliance**
 
-|Task ID|Task Type|Description|Affected Files|Action|Dependencies|References|Acceptance Criteria|
-|---|---|---|---|---|---|---|---|
-|P8‑T‑01|Test|Failing unit: `manifest.json` lacks required permissions|tests/unit/manifest.test.js|Load JSON & assert keys|P7‑R‑06|FR‑016|Test fails|
-|P8‑C‑02|Code|Populate manifest with MV3 fields, host permissions, options UI, `declarative_net_request` keys|manifest.json|Implement|P8‑T‑01|FR‑016|Test passes|
-|P8‑R‑03|Refactor|Split manifest into base + injection task for CI|build/manifest-builder.js|Refactor|P8‑C‑02|FR‑016|Tests pass|
-|P8‑T‑04|Test|Failing size check: bundle ≤ 200 MB|tests/unit/sizeLimit.test.js|Node fs stat|P8‑R‑03|FR‑015 NFR‑004|Test fails|
-|P8‑C‑05|Code|Add `npm run build` script zipping src excluding tests|build/package.js|Implement|P8‑T‑04|FR‑015 NFR‑004|Test passes|
-|P8‑R‑06|Refactor|Integrate build & test into GitHub Actions; enforce 80 % coverage|.github/workflows/ci.yml|Refactor|P8‑C‑05|NFR‑008|CI passes on push|
+| Task ID | Task Type | Description                                                                                     | File Path                    | Action                  | Dependencies | References     | Acceptance Criteria |
+| ------- | --------- | ----------------------------------------------------------------------------------------------- | ---------------------------- | ----------------------- | ------------ | -------------- | ------------------- |
+| P8‑T‑01 | Test      | Failing unit: `manifest.json` lacks required permissions                                        | tests/unit/manifest.test.js  | Load JSON & assert keys | P7‑R‑06      | FR‑016         | Test fails          |
+| P8‑C‑02 | Code      | Populate manifest with MV3 fields, host permissions, options UI, `declarative_net_request` keys | manifest.json                | Implement               | P8‑T‑01      | FR‑016         | Test passes         |
+| P8‑R‑03 | Refactor  | Split manifest into base + injection task for CI                                                | build/manifest-builder.js    | Refactor                | P8‑C‑02      | FR‑016         | Tests pass          |
+| P8‑T‑04 | Test      | Failing size check: bundle ≤ 200 MB                                                             | tests/unit/sizeLimit.test.js | Node fs stat            | P8‑R‑03      | FR‑015 NFR‑004 | Test fails          |
+| P8‑C‑05 | Code      | Add `npm run build` script zipping src excluding tests                                          | build/package.js             | Implement               | P8‑T‑04      | FR‑015 NFR‑004 | Test passes         |
+| P8‑R‑06 | Refactor  | Integrate build & test into GitHub Actions; enforce 80 % coverage                               | .github/workflows/ci.yml     | Refactor                | P8‑C‑05      | NFR‑008        | CI passes on push   |
 
 **Validation (Phase 8)**  
 `npm run build` produces `laserfocus.zip` < 200 MB; Chrome Web Store validator reports no MV3 errors.

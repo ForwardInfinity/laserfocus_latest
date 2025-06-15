@@ -6,6 +6,12 @@
   "action": {
     "default_popup": "src/options/options.html"
   },
+  "permissions": [
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "background": {
     "service_worker": "src/background/background.js",
     "type": "module"
