@@ -58,4 +58,16 @@ describe('Overlay Container', () => {
     expect(styles.top).toBe('0px');
     expect(styles.left).toBe('0px');
   });
+
+  test('overlay should have a high z-index to appear on top', () => {
+    const cssPath = path.resolve(__dirname, '../../src/overlay/overlay.css');
+    const css = fs.readFileSync(cssPath, 'utf8');
+    
+    // Find the z-index value from the CSS variable
+    const zIndexMatch = css.match(/--overlay-z-index:\s*(\d+);/);
+    expect(zIndexMatch).not.toBeNull();
+    
+    const zIndex = parseInt(zIndexMatch[1], 10);
+    expect(zIndex).toBe(999999);
+  });
 }); 

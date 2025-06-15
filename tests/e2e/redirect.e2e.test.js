@@ -38,6 +38,9 @@ describe('Redirection (Phase 2 – P2-T-04)', () => {
   });
 
   it('should redirect navigation to overlay before DOM load', async () => {
+    // Wait a moment for the extension's service worker to register rules
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     await page.goto('https://facebook.com', { waitUntil: 'domcontentloaded' });
     const finalUrl = page.url();
 
@@ -50,6 +53,9 @@ describe('Redirection (Phase 2 – P2-T-04)', () => {
   });
   
   it('should include the original URL as a target parameter', async () => {
+    // Wait a moment for the extension's service worker to register rules
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     await page.goto('https://facebook.com', { waitUntil: 'domcontentloaded' });
     const finalUrl = page.url();
     
