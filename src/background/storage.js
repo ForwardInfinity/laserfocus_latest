@@ -57,10 +57,33 @@ function saveBlockedDomains(domains) {
   });
 }
 
+/**
+ * Seeds the default block list if it doesn't already exist in storage
+ * This function is called during first installation (FR-013)
+ * @returns {Promise<void>}
+ */
+function seedDefaultBlockList() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(STORAGE_KEY, async (result) => {
+      // Only seed if the blockedDomains key doesn't exist in storage
+      if (!result || !result[STORAGE_KEY]) {
+        try {
+          await saveBlockedDomains(DEFAULT_BLOCKED_DOMAINS);
+          console.log('Default block list seeded successfully');
+        } catch (error) {
+          console.error('Failed to seed default block list:', error);
+        }
+      }
+      resolve();
+    });
+  });
+}
+
 // For CommonJS compatibility with Jest tests
 module.exports = { 
   getBlockedDomains, 
   saveBlockedDomains, 
+  seedDefaultBlockList,
   DEFAULT_BLOCKED_DOMAINS,
   STORAGE_KEY
 }; 
