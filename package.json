@@ -1,0 +1,24 @@
+{
+  "name": "laserfocus",
+  "version": "0.1.0",
+  "description": "Chrome Extension that interrupts distracting websites with a motivation pause",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:e2e": "jest --config jest.e2e.config.js",
+    "lint": "eslint src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chrome": "^0.0.326",
+    "axe-core": "^4.10.3",
+    "eslint": "^9.29.0",
+    "jest": "^30.0.0",
+    "jest-environment-puppeteer": "^11.0.0",
+    "prettier": "^3.5.3",
+    "puppeteer": "^24.10.1"
+  }
+}

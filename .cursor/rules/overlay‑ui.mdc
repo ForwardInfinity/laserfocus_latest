@@ -1,0 +1,48 @@
+---
+description: 
+globs: src/overlay/**
+alwaysApply: false
+---
+# Overlay HTML, video behaviour & decision flow
+
+## HTML structure (simplified)
+
+```html
+<div id="laserfocus-overlay" role="dialog" aria-modal="true">
+  <video id="motivation" muted playsinline autoplay></video>
+  <div id="spinner" aria-label="Loading…"></div>
+  <div id="controls">
+    <button id="continue" disabled>Continue</button>
+    <button id="go-back" disabled>Go Back</button>
+  </div>
+</div>
+```
+
+## Behaviour
+
+|Event|Action|
+|---|---|
+|`canplaythrough`|Hide spinner|
+|`ended`|Enable both buttons; move focus to **Continue**|
+|**Continue** click|`postMessage(MSG_CONTINUE)`|
+|**Go Back** click|`postMessage(MSG_GO_BACK)`|
+|`keydown Esc`|Treat like **Go Back** (but only after video ended)|
+
+## Accessibility
+
+- Trap focus inside `#laserfocus-overlay` until overlay closes.
+    
+- All interactive elements must be tabbable & announce via screen‑reader.
+    
+- Contrast ≥ 4.5:1; verify with axe‑core tests.
+    
+
+## Responsiveness
+
+- Use CSS Grid / flex to centre video; `max-width: min(90vmin, 480px)` for 9:16 clips.
+    
+- Test snapshots at 320 px, 768 px, 1920 px, 2560 px.
+    
+
+
+

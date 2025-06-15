@@ -1,0 +1,28 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# High‑level scope & success criteria for LaserFocus
+
+## Product scope
+
+- Chrome Extension (Manifest V3, desktop only) that uses chrome.declarativeNetRequest to intercept navigation to user‑maintained distracting domains, then shows an internal full‑screen overlay (`overlay.html`).
+- After a muted motivational video ends, user may Continue (navigate to original URL) or Go Back (history.back / chrome://newtab).
+
+## Unbreakable constraints
+
+| Area            | Rule (source)                                                  |
+| --------------- | -------------------------------------------------------------- |
+| Tech stack      | *Vanilla* ES 2020 JS, HTML5, CSS3 only. No runtime deps. (SRS 2.4) |
+| Bundling        | All videos & assets in repo; **no external network calls**. (FR‑015, NFR‑004) |
+| Accessibility   | Overlay must pass WCAG 2.1 AA, inc. focus‑trap & ARIA. (FR‑017 / 018) |
+| Size            | Zip bundle ≤ 200 MB. (FR‑015, NFR‑004) |
+| TDD             | Follow the Test → Code → Refactor cycle defined in the Implementation Plan. |
+
+Done = every Functional Requirement FR‑001…FR‑019 and Non‑Functional Requirement NFR‑001…NFR‑008 pass automated tests & manual walkthrough.
+
+
+
+
+

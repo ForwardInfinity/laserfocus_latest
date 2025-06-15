@@ -1,0 +1,51 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Directory structure, core components & messaging contracts
+
+## Canonical directory tree (SRS 3.3):  
+```text
+laserfocus/
+ ├── manifest.json
+ ├── src/
+ │   ├── background/ # service worker & helpers  
+ │   │   └── background.js
+ │   ├── overlay/ # overlay UI (HTML, JS, CSS)
+ │   │   ├── overlay.html
+ │   │   ├── overlay.js
+ │   │   └── overlay.css
+ │   └── options/ # block‑list manager UI
+ │       ├── options.html
+ │       └── options.js
+ ├── videos/ # local .mp4 clips
+ │   └── *.mp4
+ └── tests/ # Jest & Puppeteer
+     ├── unit/
+     └── e2e/
+```
+Refer to this structure when navigating or adding new files in the codebase.
+
+## Key runtime modules
+
+| Module                           | Responsibility                                                                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `background/background.js`       | Registers dNR rules, receives messages, executes `tabs.update` / `history.back()` logic.              |
+| `background/dnrRules.js`         | Pure function: _blockList_ → array\<DeclarativeNetRequestRule\>.                                      |
+| `overlay/overlay.js`             | Loads video via `getNextVideo()`, controls button state, posts decision message.                       |
+| `overlay/videoQueue.js`          | Shuffle‑queue algorithm persisting `videoHistory` (≤ 10 IDs).                                          |
+| `options/options.js`             | CRUD for `blockedDomains` in `chrome.storage.sync`; applies changes immediately.                       |
+| `common/messages.js`             | Central enum of runtime‑message keys.                                                                  |
+
+## Message contract
+
+```ts
+// common/messages.js
+export const MSG_CONTINUE = 'laserfocus/continue';
+export const MSG_GO_BACK  = 'laserfocus/goBack';
+```
+
+Any deviation from this contract MUST update both caller & receiver tests.
+
+Always keep services pure & side‑effect‑free where feasible to maximise unit‑testability.

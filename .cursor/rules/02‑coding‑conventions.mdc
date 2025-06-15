@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Styling, naming & quality gates
+
+- Style‑guide: Prettier default, ESLint _eslint:recommended_ + `no‑implicit‑globals`.
+- Naming: `camelCase` for variables, `PascalCase` for classes, dash‑case for file names (`videoQueue.js`).
+- Modules: Use ES Modules (`import …`) everywhere—even in tests.
+- Logging: `console.log` is allowed only in tests; strip / guard in production code.
+- Error handling: Use early returns, never swallow a caught `Error` silently.
+- Tests:  
+  - Every new source file must ship with a failing unit test first.  
+  - Aim for ≥ 80 % branch coverage; CI fails below this threshold.
+
+➡ If the Agent is unsure about an API or spec detail, output a TODO comment instead of inventing behaviour.

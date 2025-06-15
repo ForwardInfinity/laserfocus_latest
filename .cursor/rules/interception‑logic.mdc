@@ -1,0 +1,36 @@
+---
+description: 
+globs: src/background/**/*.js
+alwaysApply: false
+---
+# Domain‑matching & dNR redirect guidance
+
+## Domain matching
+
+- Case‑insensitive, protocol‑agnostic compare on eTLD+1 and _all_ sub‑domains.  
+  Example: `facebook.com` matches `https://m.Facebook.com/post/123`.
+
+## dNR rule format
+
+```js
+{
+  id: <auto‑increment>,
+  priority: 1,
+  action: {
+    type: 'redirect',
+    redirect: { extensionPath: `/src/overlay/overlay.html?target=${encodeURIComponent(url)}` }
+  },
+  condition: {
+    urlFilter: `||${domain}^`,
+    resourceTypes: ['main_frame']
+  }
+}
+```
+
+- Generate one rule per blocked domain and call `chrome.declarativeNetRequest.updateDynamicRules`.
+    
+- Rebuild rule‑set immediately when `blockedDomains` changes (options save).
+    
+Interception MUST be skipped when `blockedDomains.length === 0` (FR‑014).  
+
+Implement this as an early‑return guard inside the rule‑builder to avoid needless API calls.

@@ -1,0 +1,27 @@
+---
+description: 
+globs: manifest.json
+alwaysApply: false
+---
+# Canonical Manifest V3 schema for LaserFocus
+
+When editing `manifest.json`, enforce exactly:
+
+```json
+{
+  "manifest_version": 3,
+  "name": "LaserFocus",
+  "version": "0.1.0",
+  "description": "Interrupts distracting sites with a motivational pause.",
+  "action": { "default_popup": "src/options/options.html" },
+  "background": { "service_worker": "src/background/background.js", "type": "module" },
+  "host_permissions": ["<all_urls>"],
+  "permissions": ["storage", "declarativeNetRequest", "tabs", "scripting"],
+  "declarative_net_request": {
+    "rule_resources": [ { "id": "ruleset_1", "enabled": true, "path": "dnr_rules.json" } ]
+  },
+  "options_page": "src/options/options.html"
+}
+```
+Never add remote code origins, external scripts, or content_scripts.
+

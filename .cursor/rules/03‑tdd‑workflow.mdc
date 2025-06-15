@@ -1,0 +1,24 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Mandatory TDD cadence for all implementation tasks
+
+For every Functional Requirement (FR) or refactor:
+
+1. Write a failing test  
+   - Unit for pure logic (e.g., `domainMatch()`, shuffle queue).  
+   - Puppeteer e2e for navigation, overlay behaviour, options flow.  
+   - Mock Chrome APIs with `@types/chrome` stubs.
+
+2. Write the minimal code to pass that test—nothing more.
+
+3. Refactor mercilessly: remove duplication, clarify names, split modules.
+
+4. Re‑run tests & linter; commit only when green.
+
+5. Update docs / comments as part of the same commit.
+
+✅ Definition of Done for a task = green tests + lint + coverage unchanged or improved.
+

@@ -1,0 +1,31 @@
+---
+description: 
+globs: src/options/**
+alwaysApply: false
+---
+# Block‑list manager UX & storage contract
+
+## UI contract
+
+| Element                | Purpose                                     |
+| ----------------------- | ------------------------------------------- |
+| `<textarea id="domains">` | One domain per line, e.g., `facebook.com` |
+| `<button id="save">`    | Persist list to `chrome.storage.sync`       |
+| `<div id="toast">`      | Non‑modal confirmation, auto‑hide 2 s       |
+
+## Behaviours
+
+1. On DOM ready: load `blockedDomains`, sort asc, join with `\n`, set textarea value.  
+2. Clicking Save:  
+   - Split lines, trim, lower‑case, remove blanks, strip protocol/path.  
+   - Persist array; rebuild dNR rules via `chrome.runtime.sendMessage('rebuildRules')`.  
+   - Show toast “Saved ✓” (ARIA `status` region).  
+3. Close tab if opened as standalone `chrome://extensions/?options=` to keep user flow focused.
+
+Reject invalid input silently (just ignore). No alerts.
+
+## First‑run seeding
+
+On `runtime.onInstalled` with `reason === 'install'` and missing key, set default list:  
+
+`['facebook.com','instagram.com','tiktok.com','youtube.com','twitter.com']`.

@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "LaserFocus",
+  "version": "0.1.0",
+  "description": "Interrupts distracting sites with a motivational pause.",
+  "action": {
+    "default_popup": "src/options/options.html"
+  },
+  "background": {
+    "service_worker": "src/background/background.js",
+    "type": "module"
+  },
+  "options_page": "src/options/options.html"
+} 
