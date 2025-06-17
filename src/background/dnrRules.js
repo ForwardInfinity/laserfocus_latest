@@ -11,45 +11,42 @@ export function blockedListToDnrRules(blockedDomains = [], overlayPath = '/src/o
     throw new TypeError('blockedDomains must be an array');
   }
 
+  /**
+   * Escape a string to be used inside a RegExp.
+   * @param {string} str
+   * @returns {string}
+   */
+  function escapeRegex(str) {
+    // From MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
   return blockedDomains.map((domain, index) => {
     if (typeof domain !== 'string' || domain.trim() === '') {
       throw new TypeError('Each blocked domain must be a non-empty string');
     }
 
-    // Construct the redirect path, adding the target parameter if enabled
-    let redirectPath = overlayPath;
-    if (addTargetParam) {
-      try {
-        // Create a sample URL since we don't know the exact URL at rule creation time
-        const sampleTargetUrl = `https://${domain}`;
-        
-        // Chrome has a limit on URL length - ensure we're under it
-        // Max extension resource URL is typically 2MB, but we'll be conservative
-        const encodedUrl = encodeURIComponent(sampleTargetUrl);
-        if (encodedUrl.length > 2000) {
-          console.warn(`Encoded URL for ${domain} exceeds recommended length`);
-        }
-        
-        redirectPath = `${overlayPath}?target=${encodedUrl}`;
-      } catch (e) {
-        console.error(`Error encoding URL for ${domain}:`, e);
-        // Still redirect, but without the target param if encoding fails
-      }
-    }
+    // Build a regex filter that captures the ENTIRE request URL (\0)
+    // and matches the domain plus any sub-domain (case-insensitive)
+    const escapedDomain = escapeRegex(domain.toLowerCase());
+    const regexFilter = `^https?://([a-z0-9.-]*\\.)?${escapedDomain}.*`;
 
-    // dNR urlFilter syntax: "||domain^" matches eTLD+1 and any sub-domain
-    // See: https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/#url-filter-format
+    // By using regexSubstitution we inject the full original URL as \0
+    // into the overlay's query parameter. We purposefully **do not** encode
+    // here because dNR cannot run JS; decoding/encoding will be handled
+    // inside the overlay script.
+    const regexSubstitution = addTargetParam ? `${overlayPath}?target=\\0` : overlayPath;
+    const redirect = { regexSubstitution };
+
     return {
       id: index + 1, // IDs must be positive integers and unique per rule list
       priority: 1,
       action: {
         type: 'redirect',
-        redirect: {
-          extensionPath: redirectPath,
-        },
+        redirect,
       },
       condition: {
-        urlFilter: `||${domain}^`,
+        regexFilter,
         resourceTypes: ['main_frame'],
       },
     };

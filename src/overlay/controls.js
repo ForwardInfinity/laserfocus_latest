@@ -3,6 +3,36 @@
  * Handles button state management and event binding for decision flow.
  */
 
+import { MSG_CONTINUE } from '../common/messages.js';
+
+/**
+ * Extract the target URL from the query parameters
+ * @returns {string|null} The decoded target URL or null if not found
+ */
+function getTargetUrl() {
+  // We cannot trust URLSearchParams because the *value* itself may contain
+  // un-escaped ampersands (e.g. the original URL has its own query string).
+  // Instead, locate the first occurrence of "target=" and take everything
+  // until the next '&' (if any) or the end of the search string.
+
+  const search = window.location.search;
+  // Early exit if no "?target=" fragment is present.
+  if (!search.includes('target=')) return null;
+
+  // Use RegExp with non-greedy capture to pull the exact value.
+  const match = search.match(/[?&]target=([^&]+)/);
+  if (!match || !match[1]) return null;
+
+  const rawValue = match[1];
+
+  try {
+    return decodeURIComponent(rawValue);
+  } catch (_err) {
+    // The value might already be decoded; return as-is.
+    return rawValue;
+  }
+}
+
 /**
  * Manages the decision buttons state and event handlers
  */
@@ -19,7 +49,7 @@ export const Controls = {
 
     // Enable buttons when video ends
     videoElement.addEventListener('ended', () => {
-      this.enableButtons(continueButton, goBackButton);
+      Controls.enableButtons(continueButton, goBackButton);
     });
 
     // For testing purposes, dispatch a custom event when buttons are enabled
@@ -50,13 +80,18 @@ export const Controls = {
 
   /**
    * Attaches event handlers to the decision buttons
-   * These are stubs for now, to be implemented in later tasks
    */
   attachButtonHandlers(continueButton, goBackButton) {
     if (continueButton) {
       continueButton.addEventListener('click', () => {
-        // Will be implemented in task P5-C-05 
-        console.debug('Continue clicked');
+        const targetUrl = getTargetUrl();
+        if (targetUrl) {
+          // Send message to the background script to navigate to the target URL
+          chrome.runtime.sendMessage({
+            action: MSG_CONTINUE,
+            targetUrl
+          });
+        }
       });
     }
 

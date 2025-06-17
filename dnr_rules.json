@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "extensionPath": "/src/overlay/overlay.html?target=https%3A%2F%2Ffacebook.com"
+      }
+    },
+    "condition": {
+      "urlFilter": "||facebook.com^",
+      "resourceTypes": ["main_frame"]
+    }
+  }
+] 

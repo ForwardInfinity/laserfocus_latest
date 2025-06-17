@@ -11,6 +11,8 @@ export default {
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
   
+  // No ESM experimental flags – tests use CommonJS by default
+  
   // Use ES modules
   transform: {},
   

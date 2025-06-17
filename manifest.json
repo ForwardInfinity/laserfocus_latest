@@ -7,14 +7,37 @@
     "default_popup": "src/options/options.html"
   },
   "permissions": [
-    "declarativeNetRequest"
+    "declarativeNetRequest",
+    "tabs",
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>"
   ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/overlay/overlay.html",
+        "src/overlay/*",
+        "videos/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
   "background": {
     "service_worker": "src/background/background.js",
     "type": "module"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "default",
+        "enabled": true,
+        "path": "dnr_rules.json"
+      }
+    ]
   },
   "options_page": "src/options/options.html"
 } 
