@@ -42,7 +42,7 @@ export async function getVideoHistoryFromStorage() {
     try {
       chrome.storage.local.get('videoHistory', (result) => {
         if (chrome.runtime?.lastError) {
-          if (process.env.NODE_ENV !== 'production') {
+          if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production') {
             console.error('Error retrieving video history:', chrome.runtime.lastError);
           }
           resolve([]);
@@ -51,7 +51,7 @@ export async function getVideoHistoryFromStorage() {
         }
       });
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
+      if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production') {
         console.error('Exception retrieving video history:', error);
       }
       resolve([]);
@@ -68,13 +68,13 @@ export async function saveVideoHistoryToStorage(videoHistory) {
   return new Promise((resolve) => {
     try {
       chrome.storage.local.set({ videoHistory }, () => {
-        if (chrome.runtime?.lastError && process.env.NODE_ENV !== 'production') {
+        if (chrome.runtime?.lastError && (typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production')) {
           console.error('Error saving video history:', chrome.runtime.lastError);
         }
         resolve();
       });
     } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
+      if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production') {
         console.error('Exception saving video history:', error);
       }
       resolve();
@@ -95,7 +95,7 @@ export async function getNextVideo() {
     await saveVideoHistoryToStorage([nextVideo, ...history].slice(0, 10));
     return nextVideo;
   } catch (err) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production') {
       console.error('Error in getNextVideo()', err);
     }
     // Return first available asset as safe fallback.

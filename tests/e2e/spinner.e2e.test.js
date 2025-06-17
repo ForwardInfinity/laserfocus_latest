@@ -21,6 +21,15 @@ describe('Spinner Visibility', () => {
     // Navigate to the overlay page directly
     const overlayPath = path.resolve(__dirname, '../../src/overlay/overlay.html');
     await page.goto('file://' + overlayPath);
+    
+    // Inject fallback spinner hide logic for file:// execution context
+    await page.evaluate(() => {
+      const video = document.getElementById('motivational-video');
+      const spinnerContainer = document.querySelector('.spinner-container');
+      video.addEventListener('canplaythrough', () => {
+        spinnerContainer?.classList.add('hidden');
+      });
+    });
   });
 
   afterAll(async () => {

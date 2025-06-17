@@ -55,7 +55,8 @@ export const LaserFocusUI = {
       video.play()
         .then(() => this.hideClickToPlay(clickToPlayEl))
         .catch((e) => {
-          if (process.env.NODE_ENV !== 'production') {
+          // In extension runtime `process` is undefined; guard to avoid ReferenceError
+          if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production') {
             console.error('Failed to play video:', e);
           }
         });
