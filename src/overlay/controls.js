@@ -3,7 +3,7 @@
  * Handles button state management and event binding for decision flow.
  */
 
-import { MSG_CONTINUE } from '../common/messages.js';
+import { MSG_CONTINUE, MSG_GO_BACK } from '../common/messages.js';
 
 /**
  * Extract the target URL from the query parameters
@@ -97,8 +97,9 @@ export const Controls = {
 
     if (goBackButton) {
       goBackButton.addEventListener('click', () => {
-        // Will be implemented in task P5-C-08
-        console.debug('Go Back clicked');
+        chrome.runtime.sendMessage({
+          action: MSG_GO_BACK,
+        });
       });
     }
   }

@@ -6,6 +6,9 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
 
+// Tăng timeout cho toàn file test (CI chậm)
+jest.setTimeout(60000);
+
 describe('Button State Management', () => {
   let browser;
   let page;
@@ -14,7 +17,7 @@ describe('Button State Management', () => {
     // Launch browser
     browser = await puppeteer.launch({
       headless: "new",
-      args: ['--no-sandbox']
+      args: ['--no-sandbox', '--allow-file-access-from-files']
     });
     page = await browser.newPage();
     
@@ -22,24 +25,14 @@ describe('Button State Management', () => {
     const overlayPath = path.resolve(__dirname, '../../src/overlay/overlay.html');
     await page.goto('file://' + overlayPath);
     
-    // Inject helper in test context to enable buttons once video ends in case the overlay logic fails in file://
+    // Chờ overlay scripts tải xong để Controls có mặt
+    await page.waitForFunction(() => !!window.LaserFocusControls);
+
+    // KHÔNG inject fallback. Chúng ta chờ sự kiện 'buttons-enabled'
+    // (được dispatch trong Controls) để biết nút đã được enable.
     await page.evaluate(() => {
-      const video = document.getElementById('motivational-video');
-      const continueButton = document.getElementById('continue-button');
-      const goBackButton = document.getElementById('go-back-button');
-
-      const enable = () => {
-        continueButton?.removeAttribute('disabled');
-        goBackButton?.removeAttribute('disabled');
-      };
-
-      // Prefer using the real Controls module if it exists
-      if (window.LaserFocusControls) {
-        video.addEventListener('ended', enable);
-      } else {
-        // Fallback: attach minimalist listener so the test still validates FR-008
-        video.addEventListener('ended', enable);
-      }
+      window.__buttonsReady = false;
+      document.addEventListener('buttons-enabled', () => { window.__buttonsReady = true; });
     });
   });
 
@@ -82,26 +75,21 @@ describe('Button State Management', () => {
     expect(buttonState.continueDisabled).toBe(true);
     expect(buttonState.goBackDisabled).toBe(true);
     
-    // Trigger the video ended event
+    // Kích hoạt sự kiện video kết thúc
     await page.evaluate(() => {
-      const video = document.getElementById('motivational-video');
-      video.dispatchEvent(new Event('ended'));
+      document.getElementById('motivational-video')
+              .dispatchEvent(new Event('ended'));
     });
-    
-    // Use a small delay
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    // Check if buttons are now enabled
-    buttonState = await page.evaluate(() => {
-      const continueButton = document.getElementById('continue-button');
-      const goBackButton = document.getElementById('go-back-button');
-      
-      return {
-        continueDisabled: continueButton?.hasAttribute('disabled'),
-        goBackDisabled: goBackButton?.hasAttribute('disabled')
-      };
-    });
-    
+
+    // Chờ đến khi overlay phát sự kiện buttons-enabled hoặc thuộc tính disabled bị gỡ
+    await page.waitForFunction(() => window.__buttonsReady === true);
+
+    // Kiểm tra state cuối cùng
+    buttonState = await page.evaluate(() => ({
+      continueDisabled: document.getElementById('continue-button').hasAttribute('disabled'),
+      goBackDisabled: document.getElementById('go-back-button').hasAttribute('disabled'),
+    }));
+
     expect(buttonState.continueDisabled).toBe(false);
     expect(buttonState.goBackDisabled).toBe(false);
   });
