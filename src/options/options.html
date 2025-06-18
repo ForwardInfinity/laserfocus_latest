@@ -7,6 +7,14 @@
   <!-- Will be populated in subsequent phases -->
 </head>
 <body>
-  <!-- Options page content will be implemented in Phase 6 -->
+  <main id="options-container">
+    <h1>LaserFocus – Block-List</h1>
+    <label for="blocked-domains-textarea">Blocked Domains (one per line)</label>
+    <textarea id="blocked-domains-textarea" rows="10" aria-label="Blocked domains list"></textarea>
+    <div class="actions">
+      <button id="save-button" aria-label="Save block list">Save</button>
+    </div>
+  </main>
+  <script type="module" src="options.js"></script>
 </body>
 </html> 
