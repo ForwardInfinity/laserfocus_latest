@@ -13,6 +13,7 @@
   --overlay-header-font-size: 1.5rem;
   --spinner-color: #1976d2;
   --spinner-size: 50px;
+  --focus-outline-color: #4a90e2;
 }
 
 /* Base styles */
@@ -146,4 +147,40 @@ body, html {
 .overlay-footer {
   padding: var(--overlay-padding);
   text-align: center;
+}
+
+/* Decision buttons styles */
+.decision-button {
+  margin: 0 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  background-color: var(--spinner-color);
+  color: white;
+  border: none;
+}
+
+.decision-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.decision-button:focus {
+  outline: 3px solid var(--focus-outline-color);
+  outline-offset: 2px;
+}
+
+/* Screen reader only styles */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 } 

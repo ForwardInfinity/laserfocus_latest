@@ -8,20 +8,23 @@
   <!-- Will be populated in subsequent phases -->
 </head>
 <body>
-  <div id="laserfocus-overlay">
+  <div id="laserfocus-overlay" role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="overlay-title" aria-describedby="overlay-description">
     <header class="overlay-header">
-      <h1>LaserFocus</h1>
+      <h1 id="overlay-title">LaserFocus</h1>
     </header>
+    <div id="overlay-description" class="sr-only">
+      Watch this motivational video to help you stay focused. After the video ends, you can choose to continue to the site or go back.
+    </div>
     <main class="overlay-content">
       <!-- Video player -->
       <div class="video-container">
-        <video id="motivational-video" muted playsinline autoplay></video>
+        <video id="motivational-video" muted playsinline autoplay aria-hidden="true"></video>
         <div id="click-to-play" style="display: none;">
           <button id="play-button">Click to Play</button>
         </div>
       </div>
       <div class="spinner-container">
-        <div class="spinner">
+        <div class="spinner" role="status" aria-live="polite">
           <div class="spinner-circle"></div>
           <p class="spinner-text">Loading...</p>
         </div>

@@ -211,17 +211,3 @@ The project is complete when **all** of the following hold:
     
 7. Source repository contains fully documented code, README with usage instructions, and CI badge showing passing status.
     
-
----
-
-### Self‑Correction Checklist (internal verification)
-
-- ✅ Every functional feature is decomposed into **Test → Code → Refactor** tasks.
-    
-- ✅ All tasks are atomic, with unambiguous `Action` steps runnable by an AI agent.
-    
-- ✅ `References` column maps each task to exact PRD/SRS IDs.
-    
-- ✅ `Dependencies` create a valid, acyclic order inside and across phases.
-    
-- ✅ Plan content derives **only** from provided PRD/SRS; no extraneous requirements introduced.
