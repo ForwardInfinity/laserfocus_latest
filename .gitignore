@@ -5,6 +5,9 @@
 /dist
 /build
 
+# Distributable
+laserfocus.zip
+
 # Logs
 npm-debug.log*
 yarn-debug.log*

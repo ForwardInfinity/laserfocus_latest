@@ -10,4 +10,8 @@ export default {
   
   // Use longer timeout for e2e tests
   testTimeout: 30000,
+  
+  // Disable coverage collection for e2e to rely on unit-test coverage only
+  collectCoverage: false,
+  coverageThreshold: {},
 }; 

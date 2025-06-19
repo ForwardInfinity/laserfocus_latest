@@ -9,13 +9,15 @@
     "test:e2e": "jest --config jest.e2e.config.js",
     "lint": "eslint src",
     "build:manifest": "node build/manifest-builder.js",
-    "build": "npm run build:manifest"
+    "build:package": "node build/package.js",
+    "build": "npm run build:manifest && npm run build:package"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/chrome": "^0.0.326",
+    "archiver": "^6.0.0",
     "axe-core": "^4.10.3",
     "eslint": "^9.29.0",
     "jest": "^30.0.0",

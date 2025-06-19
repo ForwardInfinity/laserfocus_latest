@@ -1,6 +1,6 @@
 export default {
   // Indicates whether the coverage information should be collected
-  collectCoverage: false,
+  collectCoverage: true,
   
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
@@ -24,4 +24,13 @@ export default {
   
   // An array of regexp pattern strings that are matched against all test paths
   testPathIgnorePatterns: ["/node_modules/", ".*\\.e2e\\.test\\.js$"],
+  
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  },
 }; 
