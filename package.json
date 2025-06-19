@@ -7,7 +7,9 @@
   "scripts": {
     "test": "jest",
     "test:e2e": "jest --config jest.e2e.config.js",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "build:manifest": "node build/manifest-builder.js",
+    "build": "npm run build:manifest"
   },
   "keywords": [],
   "author": "",
