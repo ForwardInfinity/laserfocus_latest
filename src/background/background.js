@@ -9,14 +9,52 @@
 
 import { blockedListToDnrRules } from './dnrRules.js';
 import { navigateToContinue, goBackOrNewTab } from './navigation.js';
-import { MSG_CONTINUE, MSG_GO_BACK } from '../common/messages.js';
+import { MSG_CONTINUE, MSG_GO_BACK, MSG_UPDATE_RULES } from '../common/messages.js';
+import { getBlockedDomains } from './storage.js';
 
-// TODO: replace with dynamic storage-driven list in later phases (P1)
-const BLOCKED_DOMAINS = ['facebook.com'];
+// Overlay page path
 const OVERLAY_PATH = '/src/overlay/overlay.html';
 
-// Generate the rules once at start-up
-const RULES = blockedListToDnrRules(BLOCKED_DOMAINS, OVERLAY_PATH);
+// Reference to the current rules for updating
+let currentRules = [];
+
+/**
+ * Initializes the rule set based on stored domains
+ */
+async function initializeRules() {
+  const blockedDomains = await getBlockedDomains();
+  currentRules = blockedListToDnrRules(blockedDomains, OVERLAY_PATH);
+  applyRedirectRules();
+}
+
+/**
+ * Updates the dynamic rule set with new domains
+ * @param {string[]} domains - Array of domains to block
+ */
+function updateBlockedDomains(domains) {
+  // Preserve existing rule IDs for removal
+  const previousRuleIds = currentRules.map((r) => r.id);
+
+  // Generate the replacement rules from the new domain list
+  const newRules = blockedListToDnrRules(domains, OVERLAY_PATH);
+
+  // Update the reference *before* applying so that any subsequent call
+  // reflects the latest state.
+  currentRules = newRules;
+
+  // If the DNR API is unavailable (e.g., Jest/Node), stop here.
+  if (!chrome?.declarativeNetRequest?.updateDynamicRules) {
+    return true;
+  }
+
+  // Atomically replace the ruleset: first remove old, then add new.
+  chrome.declarativeNetRequest.updateDynamicRules({
+    removeRuleIds: previousRuleIds,
+    addRules: newRules,
+  });
+
+  return true;
+}
 
 /**
  * Updates the dynamic rule set: removes existing rule IDs, then adds the new ones.
@@ -28,26 +66,35 @@ function applyRedirectRules() {
   }
 
   chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: RULES.map((r) => r.id),
-    addRules: RULES,
+    removeRuleIds: currentRules.map((r) => r.id),
+    addRules: currentRules,
   });
 }
 
-// Apply rules on service-worker load, install, and browser start-up
-applyRedirectRules();
-chrome.runtime.onInstalled.addListener(() => applyRedirectRules());
-chrome.runtime.onStartup.addListener(() => applyRedirectRules());
+// Initialize rules on service-worker load, install, and browser start-up
+initializeRules();
+chrome.runtime.onInstalled.addListener(() => initializeRules());
+chrome.runtime.onStartup.addListener(() => initializeRules());
 
 // Handle navigation messages from the overlay
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === MSG_CONTINUE && message.targetUrl) {
     navigateToContinue(message.targetUrl, sender.tab.id);
     sendResponse({ success: true });
-    return; // ensure single action per message
+    return true; // keep the message channel open for the async response
   }
 
   if (message.action === MSG_GO_BACK) {
     goBackOrNewTab(sender.tab?.id);
     sendResponse({ success: true });
+    return true; // keep the message channel open for the async response
   }
+  
+  if (message.action === MSG_UPDATE_RULES) {
+    const success = updateBlockedDomains(message.domains);
+    sendResponse({ success, rulesUpdated: currentRules.length });
+    return true; // keep the message channel open for the async response
+  }
+  
+  return false;
 }); 
