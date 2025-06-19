@@ -69,16 +69,26 @@ body, html {
 
 /* Video container */
 .video-container {
-  width: 100%;
-  max-width: 800px;
-  max-height: 80vh;
+  /* Allow the video to grow vertically up to most of the viewport while
+     keeping it centred like a phone screen. */
+  width: auto;
+  height: 80vh;            /* fills most of the viewport height */
+  max-height: 90vh;        /* small margin to header / footer */
+  max-width: 90vw;         /* never overflow sideways */
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #motivational-video {
-  width: 100%;
-  height: auto;
-  background-color: #000;
+  /* Display video as large as possible without cropping, maintaining aspect ratio */
+  width: auto;
+  height: 100%;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  background-color: transparent; /* remove black box behind video */
 }
 
 /* Click to play fallback */

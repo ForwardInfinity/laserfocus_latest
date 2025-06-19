@@ -41,6 +41,11 @@ export const LaserFocusUI = {
 
     video.addEventListener('canplaythrough', () => {
       this.hideSpinner(spinnerContainer);
+      // If the browser blocked autoplay with sound, the video will remain paused.
+      // In that case we prompt the user with the click-to-play overlay.
+      if (video.paused) {
+        this.showClickToPlay(clickToPlayEl);
+      }
     });
 
     video.addEventListener('error', () => {
