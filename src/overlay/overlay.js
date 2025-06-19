@@ -14,13 +14,12 @@ import { FocusTrap } from './focusTrap.js';
 // global `chrome` object. The stub covers only the members accessed in
 // overlay-side code (storage.local & runtime).
 if (typeof chrome === 'undefined') {
-  /* eslint-disable no-underscore-dangle, no-restricted-globals */
   // @ts-ignore – make TS/ESLint happy even though we are declaring global
   window.chrome = {
     storage: {
       local: {
-        get: (_key, callback) => callback({}),
-        set: (_obj, callback) => callback && callback(),
+        get: (key, callback) => callback({}),
+        set: (obj, callback) => callback && callback(),
       },
     },
     runtime: {

@@ -59,7 +59,6 @@ function loadSanitizer() {
   return new Promise((resolve, reject) => {
     try {
       // Jest/Node: use require if available
-      // eslint-disable-next-line global-require, import/no-dynamic-require
       ({ sanitizeDomain } = require('./sanitize.js'));
       return resolve(sanitizeDomain);
     } catch (err) {
@@ -172,6 +171,5 @@ ready(() => {
 
 // Expose for CommonJS (Jest)
 if (typeof module !== 'undefined') {
-  // eslint-disable-next-line no-undef
   module.exports = { init, showToast, debounce };
 } 

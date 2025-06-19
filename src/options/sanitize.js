@@ -54,6 +54,5 @@ export function sanitizeDomain(raw) {
 
 // Expose for CommonJS (Jest)
 if (typeof module !== 'undefined') {
-  // eslint-disable-next-line no-undef
   module.exports = { sanitizeDomain };
 } 
